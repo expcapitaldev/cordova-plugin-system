@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		id="cordova-plugin-system"
-		version="1.0.0">
+		version="1.1.0">
 
 	<name>Cordova System Plugin</name>
 	<description>System Plugin</description>
@@ -14,12 +14,12 @@
 	<issue>https://github.com/expcapitaldev/cordova-plugin-system/issues</issue>
 
 	<engines>
-		<engine name="cordova-android" version=">=10.1.1" />  <!-- actual values for main app -->
-		<engine name="cordova-ios" version=">=6.2.0" />
+		<engine name="cordova-android" version=">=10.1.1"/>  <!-- actual values for main app -->
+		<engine name="cordova-ios" version=">=6.2.0"/>
 	</engines>
 
 	<js-module src="www/System.js" name="SystemPlugin">
-		<clobbers target="cordova.plugins.System" />
+		<clobbers target="cordova.plugins.System"/>
 	</js-module>
 
 	<platform name="android">
@@ -27,11 +27,20 @@
 		<config-file target="res/xml/config.xml" parent="/*">
 			<feature name="SystemPlugin">
 				<param name="android-package" value="com.expcapital.system.SystemPlugin"/>
-				<param name="onload" value="false" />
+				<param name="onload" value="false"/>
 			</feature>
 		</config-file>
 
 		<source-file src="src/android/com/expcapital/system/SystemPlugin.java" target-dir="src/com/expcapital/system"/>
+
+		<config-file target="AndroidManifest.xml" parent="/*">
+			<queries>
+				<intent>
+					<action android:name="android.intent.action.VIEW"/>
+					<data android:scheme="mailto"/>
+				</intent>
+			</queries>
+		</config-file>
 
 	</platform>
 
@@ -39,13 +48,36 @@
 
 		<config-file target="config.xml" parent="/*">
 			<feature name="SystemPlugin">
-				<param name="ios-package" value="SystemPlugin" />
-				<param name="onload" value="false" />
+				<param name="ios-package" value="SystemPlugin"/>
+				<param name="onload" value="false"/>
 			</feature>
 		</config-file>
 
-		<header-file src="src/ios/CDVSystemPlugin.h" />
-		<source-file src="src/ios/CDVSystemPlugin.m" />
+		<header-file src="src/ios/CDVSystemPlugin.h"/>
+		<source-file src="src/ios/CDVSystemPlugin.m"/>
+
+		<config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
+			<array>
+				<string>readdlespark</string>
+				<string>googlegmail</string>
+				<string>com.apple.mobilemail</string>
+				<string>ms-outlook</string>
+				<string>spike</string>
+				<string>airmail</string>
+				<string>edisonmail</string>
+				<string>twobird</string>
+				<string>hey</string>
+				<string>protonmail</string>
+				<string>polymail</string>
+				<string>bluemail</string>
+				<string>cloudmagic</string>
+				<string>yandexmail</string>
+				<string>mailrumail</string>
+				<string>mycom-mail-x-callback</string>
+				<string>canary</string>
+				<string>ymail</string>
+			</array>
+		</config-file>
 
 	</platform>
 
