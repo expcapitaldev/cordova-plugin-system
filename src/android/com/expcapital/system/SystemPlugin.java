@@ -1,6 +1,11 @@
 package com.expcapital.system;
 
 
+import android.content.Intent;
+import android.content.pm.LabeledIntent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 
@@ -10,12 +15,15 @@ import org.apache.cordova.CordovaPlugin;
 import org.json.JSONException;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SystemPlugin extends CordovaPlugin {
 
 	protected static SystemPlugin instance = null;
 
 	private static final String ACTION_SET_TEXT_ZOOM = "setTextZoom";
+	private static final String ACTION_OPEN_EMAIL_APP = "openEmailApp";
 
 	protected static final String TAG = "SystemPlugin";
 
@@ -39,6 +47,13 @@ public class SystemPlugin extends CordovaPlugin {
 				@Override
 				public void run() {
 					setTextZoom(args, callbackContext);
+				}
+			});
+		} else if (ACTION_OPEN_EMAIL_APP.equals(action)) {
+			cordova.getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					openEmailApp(callbackContext);
 				}
 			});
 		}
@@ -65,6 +80,52 @@ public class SystemPlugin extends CordovaPlugin {
 			}
 
 			callbackContext.success();
+		} catch (Exception e) {
+			handleExceptionWithContext(e, callbackContext);
+		}
+
+	}
+
+	private void openEmailApp(CallbackContext callbackContext) {
+
+		try {
+//			Intent draft = new Intent(Intent.ACTION_VIEW, Uri.fromParts("mailto", "", null));
+//			draft.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//			cordova.getActivity().startActivity(Intent.createChooser(draft, null));
+//			callbackContext.success();
+
+
+			Intent emailIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:"));
+			PackageManager pm = webView.getContext().getPackageManager();
+
+			List<ResolveInfo> resInfo = pm.queryIntentActivities(emailIntent, 0);
+			if (resInfo.size() > 0) {
+				ResolveInfo ri = resInfo.get(0);
+				// First create an intent with only the package name of the first registered email app
+				// and build a picked based on it
+				Intent intentChooser = pm.getLaunchIntentForPackage(ri.activityInfo.packageName);
+				Intent openInChooser = Intent.createChooser(intentChooser, null);
+
+				// Then create a list of LabeledIntent for the rest of the registered email apps
+				List<LabeledIntent> intentList = new ArrayList<LabeledIntent>();
+				for (int i = 1; i < resInfo.size(); i++) {
+					// Extract the label and repackage it in a LabeledIntent
+					ri = resInfo.get(i);
+					String packageName = ri.activityInfo.packageName;
+					Intent intent = pm.getLaunchIntentForPackage(packageName);
+					intentList.add(new LabeledIntent(intent, packageName, ri.loadLabel(pm), ri.icon));
+				}
+
+				LabeledIntent[] extraIntents = intentList.toArray(new LabeledIntent[intentList.size()]);
+				// Add the rest of the email apps to the picker selection
+				openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+				cordova.getActivity().startActivity(openInChooser);
+				callbackContext.success();
+			} else {
+				callbackContext.error("no email app found");
+			}
+
+
 		} catch (Exception e) {
 			handleExceptionWithContext(e, callbackContext);
 		}
