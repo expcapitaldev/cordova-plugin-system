@@ -47,14 +47,14 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
 
         @try {
 
-            NSArray<NSDictionary *>* mailList = [command.arguments objectAtIndex:0];
+            NSArray<NSDictionary *>* mailList = [self getMailList];
             NSMutableArray<NSDictionary *>* availableMailList = [[NSMutableArray alloc] initWithCapacity:[mailList count]];
 
             for (NSDictionary *mailListItem in mailList) {
-                NSString *scheme = mailListItem[@"scheme"];
+                NSString *scheme = mailListItem[@"package"];
 
                 if (scheme) {
-                    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:scheme]]) {
+                    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[scheme stringByAppendingString:@":"]]]) {
                         [availableMailList addObject:mailListItem];
                     }
                 }
@@ -83,7 +83,7 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
                 return;
             }
 
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString: scheme] options:@{} completionHandler:^(BOOL success) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString: [scheme stringByAppendingString:@":"]] options:@{} completionHandler:^(BOOL success) {
                 if (success) {
                     [self sendPluginSuccess:command];
                 }else{
@@ -109,6 +109,30 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
 }
 
 #pragma mark - utility functions
+
+- (NSArray<NSDictionary *>*) getMailList
+{
+    return @[
+        @{@"label": @"Airmail", @"package": @"airmail"},
+        @{@"label": @"Apple Mail", @"package": @"com.apple.mobilemail"},
+        @{@"label": @"Blue mail", @"package": @"bluemail"},
+        @{@"label": @"Canary Mail", @"package": @"canary"},
+        @{@"label": @"Edison Mail", @"package": @"edisonmail"},
+        @{@"label": @"Gmail", @"package": @"googlegmail"},
+        @{@"label": @"Hey", @"package": @"hey"},
+        @{@"label": @"Mail.ru", @"package": @"mailrumail"},
+        @{@"label": @"myMail", @"package": @"mycom-mail-x-callback"},
+        @{@"label": @"Newton Mail", @"package": @"cloudmagic"},
+        @{@"label": @"Outlook", @"package": @"ms-outlook"},
+        @{@"label": @"Polymail", @"package": @"polymail"},
+        @{@"label": @"ProtonMail", @"package": @"protonmail"},
+        @{@"label": @"Spark", @"package": @"readdlespark"},
+        @{@"label": @"Spike", @"package": @"spike"},
+        @{@"label": @"Twobird", @"package": @"twobird"},
+        @{@"label": @"Yahoo Mail", @"package": @"ymail"},
+        @{@"label": @"Yandex.Mail", @"package": @"yandexmail"}
+    ];
+}
 
 - (BOOL) isNotNull: (NSString*)str
 {
