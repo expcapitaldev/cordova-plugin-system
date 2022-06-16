@@ -109,7 +109,7 @@ public class SystemPlugin extends CordovaPlugin {
 							packageNameSet.add(packageName);
 							JSONObject obj = new JSONObject();
 							obj.put("label", label);
-							obj.put("packageName", packageName);
+							obj.put("package", packageName);
 							availableMailList.put(obj);
 						}
 					}
