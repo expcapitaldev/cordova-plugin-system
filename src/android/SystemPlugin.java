@@ -200,7 +200,6 @@ public class SystemPlugin extends CordovaPlugin {
 						callbackContext.error("style content is empty");
 						return;
 					}
-					injectStyleCode(styleContent);
 
 					int restrictionTitleKeyId = resources.getIdentifier(restrictionTitleKeyIdentifier, "string", packageName);
 					int restrictionDescriptionKeyId = resources.getIdentifier(restrictionDescriptionKeyIdentifier, "string", packageName);
@@ -239,6 +238,7 @@ public class SystemPlugin extends CordovaPlugin {
 					pageContent = pageContent.replace(TRANSLATION_DESCRIPTION_REPLACE_KEY, descriptionText);
 					pageContent = pageContent.replace(TRANSLATION_BUTTON_REPLACE_KEY, buttonText);
 
+					injectStyleCode(styleContent);
 					injectHtmlCode(pageContent);
 
 					callbackContext.success();
