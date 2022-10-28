@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		id="cordova-plugin-system"
-		version="1.2.1">
+		version="1.3.0">
 
 	<name>Cordova System Plugin</name>
 	<description>System Plugin</description>
@@ -22,7 +22,15 @@
 		<clobbers target="cordova.plugins.System"/>
 	</js-module>
 
+	<js-module name="utils" src="www/utils.js" />
+
 	<platform name="android">
+
+		<!-- cc or cx only-->
+		<preference name="RESTRICTION_PAGE_THEME" default="cc"/>
+		<preference name="RESTRICTION_TITLE_KEY" />
+		<preference name="RESTRICTION_DESCRIPTION_KEY" />
+		<preference name="RESTRICTION_BUTTON_KEY" />
 
 		<config-file target="res/xml/config.xml" parent="/*">
 			<feature name="SystemPlugin">
@@ -31,7 +39,7 @@
 			</feature>
 		</config-file>
 
-		<source-file src="src/android/com/expcapital/system/SystemPlugin.java" target-dir="src/com/expcapital/system"/>
+		<source-file src="src/android/SystemPlugin.java" target-dir="src/com/expcapital/system"/>
 
 		<config-file target="AndroidManifest.xml" parent="/*">
 			<queries>
@@ -41,6 +49,15 @@
 				</intent>
 			</queries>
 		</config-file>
+
+		<source-file src="res/android/values/system-plugin-constants.xml" target-dir="res/values" />
+		<config-file target="res/values/system-plugin-constants.xml" parent="/*">
+			<string name="restriction_title_key">$RESTRICTION_TITLE_KEY</string>
+			<string name="restriction_description_key">$RESTRICTION_DESCRIPTION_KEY</string>
+			<string name="restriction_button_key">$RESTRICTION_BUTTON_KEY</string>
+		</config-file>
+
+		<hook type="after_prepare" src="scripts/after_prepare.js" />
 
 	</platform>
 

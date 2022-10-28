@@ -1,31 +1,32 @@
 {
- "version": "1.2.1",
- "name": "cordova-plugin-system",
- "cordova_name": "Cordova System Plugin",
- "description": "Cordova System Plugin",
- "license": "MIT",
- "main": "www/System.js",
- "types": "./types/index.d.ts",
- "repo": "https://github.com/expcapitaldev/cordova-plugin-system.git",
- "issue": "https://github.com/expcapitaldev/cordova-plugin-system/issues",
- "author": "Eugene Trusevich",
- "repository": {
-  "type": "git",
-  "url": "https://github.com/expcapitaldev/cordova-plugin-system"
- },
- "keywords": [
-  "cordova",
-  "system",
-  "cordova-android",
-  "cordova-ios"
- ],
- "platforms": [
-  "android",
-  "ios"
- ],
- "dependencies": {
-  "fs": "0.0.1-security",
-  "path": "0.12.7",
-  "xcode": "3.0.1"
- }
+  "version": "1.3.0",
+  "name": "cordova-plugin-system",
+  "cordova_name": "Cordova System Plugin",
+  "description": "Cordova System Plugin",
+  "license": "MIT",
+  "main": "www/System.js",
+  "types": "./types/index.d.ts",
+  "repo": "https://github.com/expcapitaldev/cordova-plugin-system.git",
+  "issue": "https://github.com/expcapitaldev/cordova-plugin-system/issues",
+  "author": "Eugene Trusevich",
+  "repository": {
+	"type": "git",
+	"url": "https://github.com/expcapitaldev/cordova-plugin-system"
+  },
+  "keywords": [
+	"cordova",
+	"system",
+	"cordova-android",
+	"cordova-ios"
+  ],
+  "platforms": [
+	"android",
+	"ios"
+  ],
+  "dependencies": {
+	"xml-js": "1.6.11",
+	"fs": "0.0.1-security",
+	"path": "0.12.7",
+	"xcode": "3.0.1"
+  }
 }
