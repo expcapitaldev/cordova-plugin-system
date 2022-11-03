@@ -1,5 +1,9 @@
 # Release Notes
 
+### Version 1.3.0 (26/10/2022)
+
+- feat(android): added new methods `checkBrowserCompatibility` and `openSystemWebView` - See `README.md`
+
 ### Version 1.2.1 (16/06/2022)
 
 - fix: getAvailableMailClients

@@ -36,6 +36,19 @@ interface ISystemPlugin {
      *
      */
     openEmailApp(scheme?: string): Promise<void>;
+
+    /**
+     * Android only
+     * Check browser version and show restriction page if application is not supported
+     * @param modulesNotSupported - indicate that the ES modules not supported. < 61 version
+     */
+    checkBrowserCompatibility(modulesNotSupported: boolean): void;
+
+    /**
+     * Android only
+     * Open next link in supported application https://play.google.com/store/apps/details?id=com.google.android.webview
+     */
+    openSystemWebView(): void;
 }
 
 interface IMailClient {
