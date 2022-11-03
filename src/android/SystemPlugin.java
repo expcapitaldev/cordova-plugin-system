@@ -215,7 +215,8 @@ public class SystemPlugin extends CordovaPlugin {
 					String translationButtonKey = resources.getString(restrictionButtonKeyId);
 
 					configuration.locale = new Locale(language);
-					Resources resources2 = new Resources(resources.getAssets(), new DisplayMetrics(), configuration);
+					DisplayMetrics dm = resources.getDisplayMetrics();
+					Resources resources2 = new Resources(resources.getAssets(), dm, configuration);
 					int restrictionTitleKeyId2 = resources2.getIdentifier(translationTitleKey, "string", packageName);
 					int restrictionDescriptionKeyId2 = resources2.getIdentifier(translationDescriptionKey, "string", packageName);
 					int restrictionButtonKeyId2 = resources2.getIdentifier(translationButtonKey, "string", packageName);
