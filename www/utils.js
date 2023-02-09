@@ -2,8 +2,11 @@
 
 /**
  * Supported Chrome version for current project (for webworkers too)
+ * 63 need to Promise.finally() and only for JS part
+ * 73 style ionic components we must use ::part selector, which is supported only in 73 version of Web View.
+ * https://ionicframework.com/docs/theming/css-shadow-parts and https://caniuse.com/mdn-css_selectors_part
  */
-var SUPPORTED_CHROME_VERSION = 63;
+var SUPPORTED_CHROME_VERSION = 73;
 
 var PLUGIN_NAME = 'SystemPlugin';
 
