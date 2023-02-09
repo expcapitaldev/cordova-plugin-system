@@ -2,7 +2,7 @@
 
 ### Version 1.3.1 (09/02/2023)
 
-- feat(android): added new methods `checkBrowserCompatibility` and `openSystemWebView` - See `README.md`
+- feat(android): supported chrome version increased to 73
 
 ### Version 1.3.0 (26/10/2022)
 
