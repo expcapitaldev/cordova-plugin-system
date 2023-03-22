@@ -71,7 +71,7 @@ public class SystemPlugin extends CordovaPlugin {
 	protected static final String TAG = "SystemPlugin";
 	private ConnectivityManager.NetworkCallback networkCallback;
 	private ConnectivityManager sockMan;
-	private static CallbackContext networkInfoChangedCallbackContext;
+	private CallbackContext networkInfoChangedCallbackContext;
 //	prevNetworkInfo:
 //	{
 //		transport: ["WIFI", "VPN"],
