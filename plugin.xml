@@ -32,6 +32,9 @@
 		<preference name="RESTRICTION_DESCRIPTION_KEY" />
 		<preference name="RESTRICTION_BUTTON_KEY" />
 
+		<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+		<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 		<config-file target="res/xml/config.xml" parent="/*">
 			<feature name="SystemPlugin">
 				<param name="android-package" value="com.expcapital.system.SystemPlugin"/>
@@ -70,8 +73,12 @@
 			</feature>
 		</config-file>
 
+		<header-file src="src/ios/CDVSystem-Bridging-Header.h" />
+		<source-file src="src/ios/CDVReachabilityIPHelper.swift" />
 		<header-file src="src/ios/CDVSystemPlugin.h"/>
 		<source-file src="src/ios/CDVSystemPlugin.m"/>
+		<header-file src="src/ios/CDVReachabilityManager.h"/>
+		<source-file src="src/ios/CDVReachabilityManager.m"/>
 
 		<config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
 			<array>
@@ -95,6 +102,19 @@
 				<string>ymail</string>
 			</array>
 		</config-file>
+
+
+		<framework src="SystemConfiguration.framework" weak="true" />
+		<podspec>
+			<config>
+				<source url="https://github.com/expcapitaldev/Reachability.git"/>
+			</config>
+			<pods use-frameworks="true">
+				<pod name="CPReachability" git="https://github.com/expcapitaldev/Reachability.git" commit="1aafec87cd709019913e563b199fdd21ce44f770" />
+			</pods>
+		</podspec>
+
+		<dependency id="cordova-plugin-add-swift-support" version="2.0.2"/>
 
 	</platform>
 

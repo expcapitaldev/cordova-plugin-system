@@ -49,6 +49,23 @@ interface ISystemPlugin {
      * Open next link in supported application https://play.google.com/store/apps/details?id=com.google.android.webview
      */
     openSystemWebView(): void;
+
+    /**
+     * iOS/Android
+     * successCallback will be called only if network exists and if "transport|proxy|addresses" was changed (anything)
+     * @see INetworkInfo
+     * Method supported only 1 instance
+     * Android only for api level 24 and more
+     * @param url only for iOS, see https://developer.apple.com/documentation/cfnetwork/1426639-cfnetworkcopyproxiesforurl
+     * @param successCallback
+     * @param errorCallback
+     */
+    startNetworkInfoNotifier(url: string | undefined, successCallback: (result: INetworkInfo) => void, errorCallback: (error: string) => void): void;
+
+    /**
+     * Catch can return only string value
+     */
+    stopNetworkInfoNotifier(): Promise<void>;
 }
 
 interface IMailClient {
@@ -63,4 +80,50 @@ interface IMailClient {
      * Android: package name
      */
     package: string;
+}
+
+/**
+ * Can not be empty
+ */
+interface INetworkInfo {
+    /**
+     * array of active transport:
+     * for ios: WIFI, CELLULAR, UNKNOWN only one active
+     * for android see transports: @see https://developer.android.com/reference/android/net/NetworkCapabilities#TRANSPORT_BLUETOOTH
+     * for android it is String[]: "WIFI" + "VPN" for example and etc
+     */
+    transport?: string[];
+    proxy?: {
+        /**
+         * iOS only, @see https://developer.apple.com/documentation/cfnetwork/proxy_types?language=objc
+         */
+        type?: string;
+        host?: string;
+        port?: string;
+        /**
+         * iOS only
+         * This key is only present for proxies of type kCFProxyTypeAutoConfigurationURL.
+         * @see https://developer.apple.com/documentation/cfnetwork/kcfproxytypeautoconfigurationurl?language=objc
+         * @see https://developer.apple.com/documentation/cfnetwork/kcfproxyautoconfigurationurlkey?language=objc
+         */
+        urlKey?: string;
+        /**
+         * android only, @see https://developer.android.com/reference/android/net/ProxyInfo#getExclusionList()
+         */
+        exclusion?: string[];
+    },
+    /**
+     * array of active interfaces
+     * for Android: it is only 1 active interface with array of ips
+     * for iOS: it is array from all available interfaces from next list: ["en", "pdp_ip", "tap", "tun", "ipsec", "ppp", "utun"]
+     *
+     */
+    addresses?: [
+        {
+            /**
+             * ips included ipv4/ipv6
+             */
+            [interfaceName: string]: Array<[ips: string]>;
+        }
+    ]
 }

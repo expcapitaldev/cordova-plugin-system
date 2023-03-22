@@ -71,6 +71,24 @@ var SystemPlugin = (function() {
             });
     }
 
+    SystemPlugin.startNetworkInfoNotifier = function(url, success, error) {
+        if (utils.isAndroid()) {
+            exec(success, error, utils.pluginName, 'startNetworkInfoNotifier', [])
+        } else {
+            if (utils.isValidUrl(url)) {
+                exec(success, error, utils.pluginName, 'startNetworkInfoNotifier', [url])
+            } else {
+                error('Invalid URL');
+            }
+        }
+    }
+
+    SystemPlugin.stopNetworkInfoNotifier = function() {
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, utils.pluginName, 'stopNetworkInfoNotifier', [])
+        })
+    }
+
 
     return SystemPlugin
 

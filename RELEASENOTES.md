@@ -1,5 +1,9 @@
 # Release Notes
 
+### Version 1.4.0 (22/03/2023)
+
+- feat(network): add ability to get network information, see `startNetworkInfoNotifier` and `stopNetworkInfoNotifier`
+
 ### Version 1.3.1 (09/02/2023)
 
 - feat(android): supported chrome version increased to 73
