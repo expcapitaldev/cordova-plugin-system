@@ -47,7 +47,7 @@ class ReachabilityIPHelper : NSObject {
         defer { freeifaddrs(addrList) }
         for cursor in sequence(first: firstAddr, next: { $0.pointee.ifa_next }) {
             let interfaceName = String(cString: cursor.pointee.ifa_name)
-            print(interfaceName)
+            // print(interfaceName)
             var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
             if
                 interfaceName.isContainsPrefix(in: InterfaceNames.supported),
@@ -68,7 +68,7 @@ class ReachabilityIPHelper : NSObject {
                         // let netmask = String(cString: netmaskName)
 //                         addresses.append(NetInfo(interface: interfaceName, ip: addrStr, netmask: netmask ))
                         addresses.append(NetworkAddress(interface: interfaceName, ip: addrStr))
-                        print(interfaceName, addrStr)
+                        // print(interfaceName, addrStr)
 
                    // }
 

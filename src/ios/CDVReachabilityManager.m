@@ -38,14 +38,14 @@
     __weak ReachabilityManager* weakSelf = self;
     self.reach.reachableBlock = ^(CPReachability*reach)
     {
-        NSLog(@"===qqq REACHABLE!");
+        // NSLog(@"===qqq REACHABLE!");
         [weakSelf checkNetworkData];
     };
 
-    self.reach.unreachableBlock = ^(CPReachability*reach)
-    {
-        NSLog(@"===qqq UNREACHABLE!");
-    };
+//    self.reach.unreachableBlock = ^(CPReachability*reach)
+//    {
+//        NSLog(@"===qqq UNREACHABLE!");
+//   };
     [self.reach startNotifier];
     [self checkNetworkData];
 
@@ -96,22 +96,9 @@
     NSArray<ProxyInfo *> * currentProxiesInfo = [self getProxySettings];
     NSString* currentTransport = [self getCurrentNetworkStatus];
 
-    BOOL isNetworkAddressChanged = NO;
-    BOOL isProxyInfoChanged = NO;
-    BOOL isTransportChanged = NO;
-
-
-    if (![self.prevNetworkAddress isEqualToArray:currentNetworkAddresses]) {
-        isNetworkAddressChanged = YES;
-    }
-    if (![self.prevProxiesInfo isEqualToArray:currentProxiesInfo]) {
-        isProxyInfoChanged = YES;
-    }
-
-
-    if (![self.prevTransport isEqualToString:currentTransport]) {
-        isTransportChanged = YES;
-    }
+	BOOL isNetworkAddressChanged = ![self.prevNetworkAddress isEqualToArray:currentNetworkAddresses];
+	BOOL isProxyInfoChanged = ![self.prevProxiesInfo isEqualToArray:currentProxiesInfo];
+	BOOL isTransportChanged = ![self.prevTransport isEqualToString:currentTransport];
 
     NetworkInfo * networkInfo = [[NetworkInfo alloc] init];
     if (isNetworkAddressChanged) {
