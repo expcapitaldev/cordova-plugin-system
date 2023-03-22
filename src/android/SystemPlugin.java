@@ -47,7 +47,7 @@ import androidx.annotation.Nullable;
 
 public class SystemPlugin extends CordovaPlugin {
 
-	protected static SystemPlugin instance = null;
+	private SystemPlugin instance = null;
 
 	private static final String ACTION_SET_TEXT_ZOOM = "setTextZoom";
 	private static final String ACTION_OPEN_EMAIL_APP = "openEmailApp";
