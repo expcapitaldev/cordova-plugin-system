@@ -60,8 +60,6 @@
 			<string name="restriction_button_key">$RESTRICTION_BUTTON_KEY</string>
 		</config-file>
 
-		<hook type="after_prepare" src="scripts/after_prepare.js" />
-
 	</platform>
 
 	<platform name="ios">
@@ -117,5 +115,7 @@
 		<dependency id="cordova-plugin-add-swift-support" version="2.0.2"/>
 
 	</platform>
+
+	<hook type="after_prepare" src="scripts/after_prepare.js" />
 
 </plugin>

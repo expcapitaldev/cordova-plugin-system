@@ -113,6 +113,11 @@ public class SystemPlugin extends CordovaPlugin {
 	}
 
 	@Override
+	public void onReset() {
+		networkInfoChangedCallbackContext = null;
+	}
+
+	@Override
 	public boolean execute(String action, final CordovaArgs args, final CallbackContext callbackContext) throws JSONException {
 
 		switch (action) {

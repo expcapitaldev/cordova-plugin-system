@@ -119,4 +119,36 @@ Utilities.logError = function(message) {
     throw new Error(message);
 }
 
+Utilities.fromDir = function(startPath, filter, rec, multiple) {
+    if (!fs.existsSync(startPath)) {
+        throw new Error('no dir' + startPath);
+    }
+    const files = fs.readdirSync(startPath);
+    const resultFiles = [];
+    for (let i = 0; i < files.length; i++) {
+        const filename = path.join(startPath, files[i]);
+        const stat = fs.lstatSync(filename);
+        if (stat.isDirectory() && rec) {
+            Utilities.fromDir(filename, filter); //recurse
+        }
+
+        if (filename.indexOf(filter) >= 0) {
+            if (multiple) {
+                resultFiles.push(filename);
+            } else {
+                return filename;
+            }
+        }
+    }
+    if (multiple) {
+        return resultFiles;
+    }
+}
+
+Utilities.unquote = function(str) {
+    if (str) return str.replace(/^"(.*)"$/, "$1");
+}
+
+Utilities.REPLACE_SWIFT_MODULE_NAME = 'SYSTEM_PLUGIN_SWIFT_MODULE_NAME';
+
 module.exports = Utilities;

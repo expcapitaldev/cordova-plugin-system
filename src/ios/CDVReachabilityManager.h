@@ -2,8 +2,8 @@
 #include <arpa/inet.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <CPReachability/Reachability.h>
-// SWIFT_MODULE_NAME
-#import "StationTradingModule-Swift.h"
+// value will be replaced to SWIFT_MODULE_NAME, see prepare hook
+#import "SYSTEM_PLUGIN_SWIFT_MODULE_NAME-Swift.h"
 
 
 
