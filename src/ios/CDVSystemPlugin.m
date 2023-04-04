@@ -10,9 +10,6 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
 //@implementation MailClient
 //@end
 
-@interface SystemPlugin () {}
-@end
-
 @implementation SystemPlugin
 
 // @override abstract
@@ -27,13 +24,13 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
     [self.commandDelegate runInBackground:^{
         @try {
 
-			double zoom = [[command.arguments objectAtIndex:0] doubleValue];
+            double zoom = [[command.arguments objectAtIndex:0] doubleValue];
 
-			NSString *jsString = [[NSString alloc] initWithFormat:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '%f%%'", zoom];
+            NSString *jsString = [[NSString alloc] initWithFormat:@"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '%f%%'", zoom];
 
-			[self executeGlobalJavascript:jsString];
+            [self executeGlobalJavascript:jsString];
 
-			[self sendPluginSuccess:command];
+            [self sendPluginSuccess:command];
 
         }@catch (NSException *exception) {
             [self handlePluginExceptionWithContext:exception :command];
@@ -108,6 +105,81 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
     }
 }
 
+- (void)startNetworkInfoNotifier:(CDVInvokedUrlCommand *)command {
+
+    [self.commandDelegate runInBackground:^{
+        @try {
+
+            if ([command.arguments count] != 1) {
+                [self sendPluginErrorWithMessage:@"Invalid arguments" command:command];
+                return;
+            }
+
+            NSString* urlString = [command.arguments objectAtIndex:0];
+            NSURL *url = [NSURL URLWithString:urlString];
+
+            if (![self isValidUrl:url]) {
+                [self sendPluginErrorWithMessage:@"Invalid url" command:command];
+                return;
+            }
+
+            if (self.networkInfoCallbackId != NULL || self.reachabilityManager != NULL) {
+                [self sendPluginErrorWithMessage:@"Already started" command:command];
+                return;
+            }
+            self.networkInfoCallbackId = command.callbackId;
+            __weak SystemPlugin* weakSelf = self;
+            self.reachabilityManager = [[ReachabilityManager alloc] init];
+
+            [self.reachabilityManager start:url :^(NetworkInfo * _Nonnull info) {
+                [weakSelf sendNetworkInfo: info];
+            }];
+
+        }@catch (NSException *exception) {
+            if (self.networkInfoCallbackId != NULL) {
+                [self sendPluginErrorAndKeepCallback:exception callbackId:self.networkInfoCallbackId];
+            } else {
+                [self handlePluginExceptionWithContext:exception :command];
+            }
+        }
+    }];
+
+}
+
+- (void)stopNetworkInfoNotifier:(CDVInvokedUrlCommand *)command {
+
+    [self.commandDelegate runInBackground:^{
+        @try {
+
+            self.networkInfoCallbackId = NULL;
+            if (self.reachabilityManager != NULL) {
+                [self.reachabilityManager stop];
+                self.reachabilityManager = NULL;
+            }
+            [self sendPluginSuccess:command];
+
+        }@catch (NSException *exception) {
+            [self handlePluginExceptionWithContext:exception :command];
+        }
+    }];
+}
+
+- (void)sendNetworkInfo:(NetworkInfo * _Nonnull)info {
+    @try {
+        if (self.networkInfoCallbackId != NULL) {
+
+            NSDictionary *result = [self convertNetworkInfo:info];
+            [self sendPluginDictionaryResultAndKeepCallback:result callbackId:self.networkInfoCallbackId];
+        }
+    }@catch (NSException *exception) {
+        if (self.networkInfoCallbackId != NULL) {
+            [self sendPluginErrorAndKeepCallback:exception callbackId:self.networkInfoCallbackId];
+        } else {
+            [self handlePluginExceptionWithoutContext:exception];
+        }
+    }
+}
+
 #pragma mark - utility functions
 
 - (NSArray<NSDictionary *>*) getMailList
@@ -134,6 +206,58 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
     ];
 }
 
+
+- (NSDictionary*)convertNetworkInfo:(NetworkInfo * _Nonnull)info {
+    NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+
+    if (info.addresses) {
+        NSMutableDictionary *addressDict = [[NSMutableDictionary alloc] init];
+        for (NetworkAddress *address in info.addresses) {
+            NSArray *ips = [addressDict objectForKey:address.interface];
+            if (ips) {
+                NSArray *updatedIps = [[NSArray alloc] initWithArray:ips];
+                [addressDict setValue:[updatedIps arrayByAddingObject:address.ip] forKey:address.interface];
+            } else {
+                [addressDict setValue:@[address.ip] forKey:address.interface];
+            }
+        }
+        [result setValue:addressDict forKey:@"addresses"];
+    }
+
+    if (info.proxy) {
+        NSMutableArray *proxyList = [[NSMutableArray alloc] init];
+        for (ProxyInfo *proxy in info.proxy) {
+            NSMutableDictionary *proxyDictionary = [[NSMutableDictionary alloc] init];
+            [proxyDictionary setValue:proxy.type forKey:@"type"];
+            if (proxy.host) {
+                [proxyDictionary setValue:proxy.host forKey:@"host"];
+            }
+            if (proxy.port) {
+                [proxyDictionary setValue:proxy.port forKey:@"port"];
+            }
+            if (proxy.urlKey) {
+                [proxyDictionary setValue:proxy.urlKey forKey:@"urlKey"];
+            }
+            [proxyList addObject: proxyDictionary];
+        }
+
+        [result setValue:proxyList forKey:@"proxy"];
+    }
+
+    if (info.transport) {
+        NSArray<NSString*>* transportList = @[info.transport];
+        [result setValue:transportList forKey:@"transport"];
+    }
+
+    return result;
+
+}
+
+- (BOOL) isValidUrl: (NSURL*)url
+{
+    return  url && url.host && url.scheme;
+}
+
 - (BOOL) isNotNull: (NSString*)str
 {
     return str != nil && str.length != 0 && ![str isEqual: @"<null>"];
@@ -158,14 +282,28 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
 - (void) handlePluginExceptionWithContext: (NSException*) exception :(CDVInvokedUrlCommand*)command
 {
     [self _logError:[NSString stringWithFormat:@"EXCEPTION: %@", exception.reason]];
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-//- (void) handlePluginExceptionWithoutContext: (NSException*) exception
-//{
-//    [self _logError:[NSString stringWithFormat:@"EXCEPTION: %@", exception.reason]];
-//}
+- (void) sendPluginErrorAndKeepCallback: (NSException*) exception callbackId:(NSString*)callbackId
+{
+    [self _logError:[NSString stringWithFormat:@"EXCEPTION: %@", exception.reason]];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    [pluginResult setKeepCallbackAsBool:YES];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+}
+
+- (void) sendPluginDictionaryResultAndKeepCallback:(NSDictionary*)result callbackId:(NSString*)callbackId {
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
+    [pluginResult setKeepCallbackAsBool:YES];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+}
+
+- (void) handlePluginExceptionWithoutContext: (NSException*) exception
+{
+    [self _logError:[NSString stringWithFormat:@"EXCEPTION: %@", exception.reason]];
+}
 
 - (void)_logError: (NSString*)msg
 {

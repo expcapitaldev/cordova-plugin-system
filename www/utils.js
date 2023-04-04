@@ -128,6 +128,15 @@ function logError(errorString) {
     console.error(PLUGIN_NAME + ' error : ' + errorString)
 }
 
+function isValidUrl(url) {
+    try {
+        new URL(url);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 module.exports = {
     isAndroid: isAndroid,
     getChromeBrowserVersion: getChromeBrowserVersion,
@@ -136,4 +145,5 @@ module.exports = {
     isNavigatorDefined: isNavigatorDefined,
     logError: logError,
     pluginName: PLUGIN_NAME,
+    isValidUrl: isValidUrl,
 }
