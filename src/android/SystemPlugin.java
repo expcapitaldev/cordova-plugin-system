@@ -109,12 +109,15 @@ public class SystemPlugin extends CordovaPlugin {
 	@Override
 	public void onResume(boolean multitasking) {
 		super.onResume(multitasking);
+		unregisterDefaultNetworkCallback();
 		registerDefaultNetworkCallback();
 	}
 
 	@Override
 	public void onReset() {
+		unregisterDefaultNetworkCallback();
 		networkInfoChangedCallbackContext = null;
+		prevNetworkInfo = new JSONObject();
 	}
 
 	@Override

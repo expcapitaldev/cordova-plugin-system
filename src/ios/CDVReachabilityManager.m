@@ -54,7 +54,7 @@
 }
 
 - (void)stopReachabilityListener {
-    if (self.reachabilityListenerStarted == NO) {
+    if (!self.reachabilityListenerStarted) {
         return;
     }
     self.reachabilityListenerStarted = NO;
@@ -63,11 +63,14 @@
     self.reach = NULL;
     self.networkInfoBlock = NULL;
     self.proxyUrl = NULL;
+    self.prevNetworkAddress = NULL;
+    self.prevTransport = NULL;
+    self.prevProxiesInfo = NULL;
 }
 
 - (void)onPause
 {
-    if (self.reachabilityListenerStarted == NO) {
+    if (!self.reachabilityListenerStarted) {
         return;
     }
     [self.reach stopNotifier];
@@ -75,7 +78,7 @@
 
 - (void)onResume
 {
-    if (self.reachabilityListenerStarted == NO) {
+    if (!self.reachabilityListenerStarted) {
         return;
     }
     [self.reach startNotifier];
