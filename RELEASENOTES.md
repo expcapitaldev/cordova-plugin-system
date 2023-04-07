@@ -1,5 +1,9 @@
 # Release Notes
 
+### Version 1.4.1 (07/04/2023)
+
+- fix(network): improvements with onReset
+
 ### Version 1.4.0 (22/03/2023)
 
 - feat(network): add ability to get network information, see `startNetworkInfoNotifier` and `stopNetworkInfoNotifier`
