@@ -17,6 +17,13 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
     NSLog(@"Starting SystemPlugin");
 }
 
+- (void)onReset {
+    self.networkInfoCallbackId = NULL;
+    if (self.reachabilityManager != NULL) {
+        [self.reachabilityManager stop];
+        self.reachabilityManager = NULL;
+    }
+}
 
 #pragma mark - plugin API
 - (void) setTextZoom:(CDVInvokedUrlCommand*)command {
