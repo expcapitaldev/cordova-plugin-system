@@ -89,6 +89,60 @@ var SystemPlugin = (function() {
         })
     }
 
+    SystemPlugin.enableScreenProtection = function() {
+        return new Promise(function(resolve, reject) {
+            var safeAreaTop = undefined;
+            var safeAreaRight = undefined;
+            var safeAreaBottom = undefined;
+            var safeAreaLeft = undefined;
+            try {
+                // to update safe-area-inset after manipulation with layers
+                // see https://developer.mozilla.org/en-US/docs/Web/CSS/env
+                // see https://ionicframework.com/docs/theming/advanced#application-variables
+                var root = document.querySelector(':root');
+                var rootStyles = window.getComputedStyle(root);
+                safeAreaTop = rootStyles.getPropertyValue(utils.ionicVariableSafeAreaTop);
+                safeAreaRight = rootStyles.getPropertyValue(utils.ionicVariableSafeAreaRight);
+                safeAreaBottom = rootStyles.getPropertyValue(utils.ionicVariableSafeAreaBottom);
+                safeAreaLeft = rootStyles.getPropertyValue(utils.ionicVariableSafeAreaLeft);
+            } catch (e) {
+                return reject('get safe-area-inset error : ' + e.message);
+            }
+            var onSuccess = function() {
+                try {
+                    var root = document.querySelector(':root');
+                    root.style.setProperty(utils.ionicVariableSafeAreaTop, safeAreaTop);
+                    root.style.setProperty(utils.ionicVariableSafeAreaRight, safeAreaRight);
+                    root.style.setProperty(utils.ionicVariableSafeAreaBottom, safeAreaBottom);
+                    root.style.setProperty(utils.ionicVariableSafeAreaLeft, safeAreaLeft);
+                } catch (e) {
+                    return reject('update safe-area-inset error : ' + e.message);
+                }
+                return resolve();
+            }
+            exec(onSuccess, reject, utils.pluginName, 'enableScreenProtection', [])
+        })
+    }
+
+    SystemPlugin.disableScreenProtection = function() {
+        return new Promise(function(resolve, reject) {
+            var onSuccess = function() {
+                try {
+                    // reset variables
+                    var root = document.querySelector(':root');
+                    root.style.setProperty(utils.ionicVariableSafeAreaTop, utils.ionicSafeAreaTopDefaultValue);
+                    root.style.setProperty(utils.ionicVariableSafeAreaRight, utils.ionicSafeAreaRightDefaultValue);
+                    root.style.setProperty(utils.ionicVariableSafeAreaBottom, utils.ionicSafeAreaBottomDefaultValue);
+                    root.style.setProperty(utils.ionicVariableSafeAreaLeft, utils.ionicSafeAreaLeftDefaultValue);
+                } catch (e) {
+                    return reject('reset safe-area-inset error : ' + e.message);
+                }
+                return resolve();
+            }
+            exec(onSuccess, reject, utils.pluginName, 'disableScreenProtection', [])
+        })
+    }
+
 
     return SystemPlugin
 

@@ -18,11 +18,37 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
 }
 
 - (void)onReset {
-    self.networkInfoCallbackId = NULL;
-    if (self.reachabilityManager != NULL) {
-        [self.reachabilityManager stop];
-        self.reachabilityManager = NULL;
-    }
+
+    [self.commandDelegate runInBackground:^{
+        @try {
+            self.networkInfoCallbackId = NULL;
+            if (self.reachabilityManager != NULL) {
+                [self.reachabilityManager stop];
+                self.reachabilityManager = NULL;
+            }
+        }@catch (NSException *exception) {
+            [self handlePluginExceptionWithoutContext:exception];
+        }
+    }];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        @try {
+            if (self.securityView == nil) {
+                return;
+            }
+            UIViewController* rootController = [UIApplication sharedApplication].delegate.window.rootViewController;
+            UIView *topView = rootController.view;
+
+            [self.securityView removeFromSuperview];
+            self.securityView = nil;
+            [topView insertSubview:self.webView atIndex:1];
+            [topView setNeedsLayout];
+        }@catch (NSException *exception) {
+            [self handlePluginExceptionWithoutContext:exception];
+        }
+
+    });
 }
 
 #pragma mark - plugin API
@@ -186,6 +212,75 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
         }
     }
 }
+
+- (void) enableScreenProtection:(CDVInvokedUrlCommand*)command {
+
+    __weak SystemPlugin* weakSelf = self;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        @try {
+
+            if (weakSelf.securityView != nil) {
+                [weakSelf sendPluginErrorWithMessage:@"already enabled" command:command];
+                return;
+            }
+
+            UIViewController* rootController = [UIApplication sharedApplication].delegate.window.rootViewController;
+            UIView *topView = rootController.view;
+
+            UITextField * guardTextField = [UITextField new];
+            guardTextField.backgroundColor = UIColor.blackColor;
+            [guardTextField setTag:INT_MAX];
+            [guardTextField setUserInteractionEnabled:NO];
+            [guardTextField setSecureTextEntry:YES];
+
+            [weakSelf.webView addSubview:guardTextField];
+            [weakSelf.webView sendSubviewToBack:guardTextField];
+
+            weakSelf.securityView = guardTextField;
+            [weakSelf.webView.layer.superlayer addSublayer:weakSelf.securityView.layer];
+            [[weakSelf.securityView.layer.sublayers firstObject] addSublayer:weakSelf.webView.layer];
+
+            [topView setNeedsLayout];
+
+            [weakSelf sendPluginSuccess:command];
+        }@catch (NSException *exception) {
+            [weakSelf handlePluginExceptionWithContext:exception :command];
+        }
+
+     });
+}
+
+- (void) disableScreenProtection:(CDVInvokedUrlCommand*)command {
+
+    __weak SystemPlugin* weakSelf = self;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        @try {
+
+            if (weakSelf.securityView == nil) {
+                [weakSelf sendPluginErrorWithMessage:@"already disabled" command:command];
+                return;
+            }
+
+            UIViewController* rootController = [UIApplication sharedApplication].delegate.window.rootViewController;
+            UIView *topView = rootController.view;
+
+            [weakSelf.securityView removeFromSuperview];
+            weakSelf.securityView = nil;
+            [topView insertSubview:weakSelf.webView atIndex:1];
+            [topView setNeedsLayout];
+
+            [weakSelf sendPluginSuccess:command];
+        }@catch (NSException *exception) {
+            [weakSelf handlePluginExceptionWithContext:exception :command];
+        }
+
+     });
+}
+
 
 #pragma mark - utility functions
 

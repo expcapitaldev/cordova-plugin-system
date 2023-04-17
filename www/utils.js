@@ -10,6 +10,16 @@ var SUPPORTED_CHROME_VERSION = 73;
 
 var PLUGIN_NAME = 'SystemPlugin';
 
+var IONIC_VARIABLE_SAFE_AREA_TOP = '--ion-safe-area-top';
+var IONIC_VARIABLE_SAFE_AREA_RIGHT = '--ion-safe-area-right';
+var IONIC_VARIABLE_SAFE_AREA_BOTTOM = '--ion-safe-area-bottom';
+var IONIC_VARIABLE_SAFE_AREA_LEFT = '--ion-safe-area-left';
+
+var IONIC_SAFE_AREA_TOP_DEFAULT_VALUE = 'env(safe-area-inset-top)';
+var IONIC_SAFE_AREA_RIGHT_DEFAULT_VALUE = 'env(safe-area-inset-right)';
+var IONIC_SAFE_AREA_BOTTOM_DEFAULT_VALUE = 'env(safe-area-inset-bottom)';
+var IONIC_SAFE_AREA_LEFT_DEFAULT_VALUE = 'env(safe-area-inset-left)';
+
 /**
  * Supported Chrome version for current project (for webworkers too)
  * @return {number}
@@ -146,4 +156,12 @@ module.exports = {
     logError: logError,
     pluginName: PLUGIN_NAME,
     isValidUrl: isValidUrl,
+    ionicVariableSafeAreaTop: IONIC_VARIABLE_SAFE_AREA_TOP,
+    ionicVariableSafeAreaRight: IONIC_VARIABLE_SAFE_AREA_RIGHT,
+    ionicVariableSafeAreaBottom: IONIC_VARIABLE_SAFE_AREA_BOTTOM,
+    ionicVariableSafeAreaLeft: IONIC_VARIABLE_SAFE_AREA_LEFT,
+    ionicSafeAreaTopDefaultValue: IONIC_SAFE_AREA_TOP_DEFAULT_VALUE,
+    ionicSafeAreaRightDefaultValue: IONIC_SAFE_AREA_RIGHT_DEFAULT_VALUE,
+    ionicSafeAreaBottomDefaultValue: IONIC_SAFE_AREA_BOTTOM_DEFAULT_VALUE,
+    ionicSafeAreaLeftDefaultValue: IONIC_SAFE_AREA_LEFT_DEFAULT_VALUE,
 }
