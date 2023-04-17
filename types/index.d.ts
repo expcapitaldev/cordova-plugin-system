@@ -66,6 +66,24 @@ interface ISystemPlugin {
      * Catch can return only string value
      */
     stopNetworkInfoNotifier(): Promise<void>;
+
+    /**
+     * iOS/Android
+     * Preventing content of the window from appearing in screenshots or video recording
+     *
+     * Notes: on iOS it is not public api, it is manipulation with iOS layers, after that window do not listen safe area inset values,
+     * so before enabling we will set value and return back default Ionic css value again
+     *
+     * Warning: This method implementation needs to be rechecked by the developer each time a new version of Ionic is released.
+     * Warning: This method can only be used by a developer who understands the implementation of the method
+     */
+    enableScreenProtection(): Promise<void>
+
+    /**
+     * iOS/Android
+     * Enable screenshots and video recording
+     */
+    disableScreenProtection(): Promise<void>;
 }
 
 interface IMailClient {
