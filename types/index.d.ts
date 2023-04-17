@@ -74,14 +74,19 @@ interface ISystemPlugin {
      * Notes: on iOS it is not public api, it is manipulation with iOS layers, after that window do not listen safe area inset values,
      * so before enabling we will set value and return back default Ionic css value again
      *
+     * iOS
      * Warning: This method implementation needs to be rechecked by the developer each time a new version of Ionic is released.
      * Warning: This method can only be used by a developer who understands the implementation of the method
+     *
+     * Catch can return only string value
      */
     enableScreenProtection(): Promise<void>
 
     /**
      * iOS/Android
      * Enable screenshots and video recording
+     *
+     * Catch can return only string value
      */
     disableScreenProtection(): Promise<void>;
 }
