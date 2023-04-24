@@ -21,6 +21,7 @@ import android.provider.Browser;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -56,6 +57,8 @@ public class SystemPlugin extends CordovaPlugin {
 	private static final String ACTION_OPEN_SYSTEM_WEB_VIEW = "openSystemWebView";
 	private static final String ACTION_START_NETWORK_INFO_NOTIFIER = "startNetworkInfoNotifier";
 	private static final String ACTION_STOP_NETWORK_INFO_NOTIFIER = "stopNetworkInfoNotifier";
+	private static final String ACTION_ENABLE_SCREEN_PROTECTION = "enableScreenProtection";
+	private static final String ACTION_DISABLE_SCREEN_PROTECTION = "disableScreenProtection";
 
 	private static final String TRANSLATION_TITLE_REPLACE_KEY = "TITLE_TEXT";
 	private static final String TRANSLATION_DESCRIPTION_REPLACE_KEY = "DESC_TEXT";
@@ -142,8 +145,11 @@ public class SystemPlugin extends CordovaPlugin {
 			case ACTION_START_NETWORK_INFO_NOTIFIER:
 				startNetworkInfoNotifier(callbackContext);
 				break;
-			case ACTION_STOP_NETWORK_INFO_NOTIFIER:
-				stopNetworkInfoNotifier(callbackContext);
+			case ACTION_ENABLE_SCREEN_PROTECTION:
+				enableScreenProtection(callbackContext);
+				break;
+			case ACTION_DISABLE_SCREEN_PROTECTION:
+				disableScreenProtection(callbackContext);
 				break;
 		}
 
@@ -597,6 +603,34 @@ public class SystemPlugin extends CordovaPlugin {
 			networkInfoChangedCallbackException(e);
 			return new JSONObject();
 		}
+	}
+
+	private void enableScreenProtection(CallbackContext callbackContext) {
+		cordova.getActivity().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					cordova.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+					callbackContext.success();
+				} catch (Exception e) {
+					handleExceptionWithContext(e, callbackContext);
+				}
+			}
+		});
+	}
+
+	private void disableScreenProtection(CallbackContext callbackContext) {
+		cordova.getActivity().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					cordova.getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+					callbackContext.success();
+				} catch (Exception e) {
+					handleExceptionWithContext(e, callbackContext);
+				}
+			}
+		});
 	}
 
 	/*

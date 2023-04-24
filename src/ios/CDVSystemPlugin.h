@@ -9,4 +9,7 @@
 - (void)openEmailApp:(CDVInvokedUrlCommand*)command;
 - (void)startNetworkInfoNotifier:(CDVInvokedUrlCommand*)command;
 - (void)stopNetworkInfoNotifier:(CDVInvokedUrlCommand*)command;
+- (void)enableScreenProtection:(CDVInvokedUrlCommand*)command;
+- (void)disableScreenProtection:(CDVInvokedUrlCommand*)command;
+@property(strong) UITextField* _Nullable securityView;
 @end
