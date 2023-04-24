@@ -1,5 +1,9 @@
 # Release Notes
 
+### Version 1.5.0 (24/04/2023)
+
+- feat: screen protection, see `enableScreenProtection` and `disableScreenProtection`
+
 ### Version 1.4.1 (07/04/2023)
 
 - fix(network): improvements with onReset
