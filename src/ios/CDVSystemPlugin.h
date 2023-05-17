@@ -1,5 +1,6 @@
 #import <Cordova/CDVPlugin.h>
 #include "CDVReachabilityManager.h"
+#import "CDVJailbreakManager.h"
 
 @interface SystemPlugin : CDVPlugin
 @property(strong) NSString* networkInfoCallbackId;
@@ -11,5 +12,6 @@
 - (void)stopNetworkInfoNotifier:(CDVInvokedUrlCommand*)command;
 - (void)enableScreenProtection:(CDVInvokedUrlCommand*)command;
 - (void)disableScreenProtection:(CDVInvokedUrlCommand*)command;
+- (void)isJailbroken:(CDVInvokedUrlCommand*)command;
 @property(strong) UITextField* _Nullable securityView;
 @end
