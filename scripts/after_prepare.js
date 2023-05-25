@@ -62,7 +62,7 @@ module.exports = function(context){
             }
 
             let fileContent = fs.readFileSync(pathToFile, 'utf8');
-            fileContent = fileContent.replace(utilities.REPLACE_SWIFT_MODULE_NAME, productName.replace(/\./g,'_'));
+            fileContent = fileContent.replace(utilities.REPLACE_SWIFT_MODULE_NAME, utilities.convertC99ExtIdentifier(productName));
             fs.writeFileSync(pathToFile, fileContent, 'utf8');
 
         } catch (e) {
