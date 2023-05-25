@@ -1,5 +1,9 @@
 # Release Notes
 
+### Version 1.5.1(25/05/2023)
+
+- fix(ios): convert an iOS C99Ext-compliant identifier
+
 ### Version 1.5.0 (24/04/2023)
 
 - feat: screen protection, see `enableScreenProtection` and `disableScreenProtection`
