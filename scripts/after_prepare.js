@@ -49,20 +49,14 @@ module.exports = function(context){
             const firstTarget = project.getFirstTarget();
             const productName = firstTarget.firstTarget.productName;
 
-            // Default values:
-            // SWIFT_MODULE_NAME = $(PRODUCT_MODULE_NAME)
-            // PRODUCT_MODULE_NAME = $(PRODUCT_NAME:c99extidentifier)
-            // PRODUCT_NAME = $(TARGET_NAME:c99extidentifier)
-            // in our case we need to replace our constant to SWIFT_MODULE_NAME
-
-            const pathToFile = path.resolve(`${IOS_DIR}/${utilities.unquote(firstTarget.firstTarget.productName)}/Plugins/cordova-plugin-system`, 'CDVReachabilityManager.h');
+            const pathToFile = path.resolve(`${IOS_DIR}/${utilities.unquote(productName)}/Plugins/cordova-plugin-system`, 'CDVReachabilityManager.h');
             if (!fs.existsSync(pathToFile) || !fs.statSync(pathToFile).isFile()) {
                 utilities.logError('CDVReachabilityManager does not find');
                 return;
             }
 
             let fileContent = fs.readFileSync(pathToFile, 'utf8');
-            fileContent = fileContent.replace(utilities.REPLACE_SWIFT_MODULE_NAME, productName.replace(/\./g,'_'));
+            fileContent = fileContent.replace(utilities.REPLACE_SWIFT_MODULE_NAME, utilities.convertC99ExtIdentifier(utilities.unquote(productName)));
             fs.writeFileSync(pathToFile, fileContent, 'utf8');
 
         } catch (e) {

@@ -149,6 +149,17 @@ Utilities.unquote = function(str) {
     if (str) return str.replace(/^"(.*)"$/, "$1");
 }
 
+// convert an iOS C99Ext-compliant identifier
+Utilities.convertC99ExtIdentifier = function(identifier) {
+    // Replace leading digits with an underscore
+    identifier = identifier.replace(/^\d+/, "_");
+
+    // Replace non-alphanumeric characters with an underscore
+    identifier = identifier.replace(/[^a-zA-Z0-9_]/g, "_");
+
+    return identifier;
+}
+
 Utilities.REPLACE_SWIFT_MODULE_NAME = 'SYSTEM_PLUGIN_SWIFT_MODULE_NAME';
 
 module.exports = Utilities;
