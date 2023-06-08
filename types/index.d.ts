@@ -89,6 +89,14 @@ interface ISystemPlugin {
      * Catch can return only string value
      */
     disableScreenProtection(): Promise<void>;
+
+    /**
+     * iOS only
+     * Detect insecure jailbroken device
+     *
+     * Catch can return only string value
+     */
+    isJailbroken(): Promise<boolean>;
 }
 
 interface IMailClient {

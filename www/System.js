@@ -3,30 +3,30 @@
 var utils = require('./utils')
 var SystemPlugin = (function() {
 
-    var exec = require('cordova/exec')
+    var exec = require('cordova/exec');
 
-    var SystemPlugin = {}
+    var SystemPlugin = {};
 
     SystemPlugin.setTextZoom = function(textZoom) {
         return new Promise(function(resolve, reject) {
             if (!Number.isFinite(textZoom)) {
-                return reject(utils.pluginName + ' invalid argument')
+                return reject(utils.pluginName + ' invalid argument');
             }
-            exec(resolve, reject, utils.pluginName, 'setTextZoom', [textZoom])
+            exec(resolve, reject, utils.pluginName, 'setTextZoom', [textZoom]);
         })
     }
     SystemPlugin.openEmailApp = function(scheme) {
         return new Promise(function(resolve, reject) {
-            var args = []
+            var args = [];
             if (typeof scheme === 'string') {
-                args = [scheme]
+                args = [scheme];
             }
-            exec(resolve, reject, utils.pluginName, 'openEmailApp', args)
+            exec(resolve, reject, utils.pluginName, 'openEmailApp', args);
         })
     }
     SystemPlugin.getAvailableMailClients = function() {
         return new Promise(function(resolve, reject) {
-            exec(resolve, reject, utils.pluginName, 'getAvailableMailClients', [])
+            exec(resolve, reject, utils.pluginName, 'getAvailableMailClients', []);
         })
     }
 
@@ -37,21 +37,21 @@ var SystemPlugin = (function() {
      */
     SystemPlugin.checkBrowserCompatibility = function(modulesNotSupported) {
         if (!utils.isAndroid()) {
-            return
+            return;
         }
-        var chromeVersion = utils.getChromeBrowserVersion()
-        var unexpectedChromeVersion = chromeVersion && chromeVersion < utils.getSupportedChromeVersion()
+        var chromeVersion = utils.getChromeBrowserVersion();
+        var unexpectedChromeVersion = chromeVersion && chromeVersion < utils.getSupportedChromeVersion();
         if (modulesNotSupported || unexpectedChromeVersion) {
-            var browserLanguage = utils.calculateBrowserLanguage()
+            var browserLanguage = utils.calculateBrowserLanguage();
 
             new Promise(function(resolve, reject) {
-                exec(resolve, reject, utils.pluginName, 'openBrowserRestrictionPage', [browserLanguage])
+                exec(resolve, reject, utils.pluginName, 'openBrowserRestrictionPage', [browserLanguage]);
             })
                 .then(function() {
                     if (!utils.isNavigatorDefined() || typeof navigator.splashscreen === 'undefined' || typeof navigator.splashscreen.hide !== 'function') {
-                        return
+                        return;
                     }
-                    navigator.splashscreen.hide()
+                    navigator.splashscreen.hide();
                 })
                 .catch(function(errorString) {
                     utils.logError(errorString);
@@ -73,10 +73,10 @@ var SystemPlugin = (function() {
 
     SystemPlugin.startNetworkInfoNotifier = function(url, success, error) {
         if (utils.isAndroid()) {
-            exec(success, error, utils.pluginName, 'startNetworkInfoNotifier', [])
+            exec(success, error, utils.pluginName, 'startNetworkInfoNotifier', []);
         } else {
             if (utils.isValidUrl(url)) {
-                exec(success, error, utils.pluginName, 'startNetworkInfoNotifier', [url])
+                exec(success, error, utils.pluginName, 'startNetworkInfoNotifier', [url]);
             } else {
                 error('Invalid URL');
             }
@@ -85,7 +85,7 @@ var SystemPlugin = (function() {
 
     SystemPlugin.stopNetworkInfoNotifier = function() {
         return new Promise(function(resolve, reject) {
-            exec(resolve, reject, utils.pluginName, 'stopNetworkInfoNotifier', [])
+            exec(resolve, reject, utils.pluginName, 'stopNetworkInfoNotifier', []);
         })
     }
 
@@ -120,7 +120,7 @@ var SystemPlugin = (function() {
                 }
                 return resolve();
             }
-            exec(onSuccess, reject, utils.pluginName, 'enableScreenProtection', [])
+            exec(onSuccess, reject, utils.pluginName, 'enableScreenProtection', []);
         })
     }
 
@@ -139,13 +139,22 @@ var SystemPlugin = (function() {
                 }
                 return resolve();
             }
-            exec(onSuccess, reject, utils.pluginName, 'disableScreenProtection', [])
+            exec(onSuccess, reject, utils.pluginName, 'disableScreenProtection', []);
         })
     }
 
+    SystemPlugin.isJailbroken = function() {
+        if (utils.isAndroid()) {
+            return Promise.reject('wrong platform detection');
+        }
+        return new Promise(function(resolve, reject) {
+            exec(resolve, reject, utils.pluginName, 'isJailbroken', []);
+        });
+    }
 
-    return SystemPlugin
+
+    return SystemPlugin;
 
 })
 
-module.exports = new SystemPlugin()
+module.exports = new SystemPlugin();

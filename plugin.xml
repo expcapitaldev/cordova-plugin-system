@@ -77,6 +77,8 @@
 		<source-file src="src/ios/CDVSystemPlugin.m"/>
 		<header-file src="src/ios/CDVReachabilityManager.h"/>
 		<source-file src="src/ios/CDVReachabilityManager.m"/>
+		<header-file src="src/ios/CDVJailbreakManager.h"/>
+		<source-file src="src/ios/CDVJailbreakManager.m"/>
 
 		<config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
 			<array>

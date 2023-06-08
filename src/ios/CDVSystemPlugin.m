@@ -281,6 +281,20 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
      });
 }
 
+- (void) isJailbroken:(CDVInvokedUrlCommand*)command {
+
+    [self.commandDelegate runInBackground:^{
+        @try {
+            JailbreakManager *jb = [[JailbreakManager alloc] init];
+            BOOL isJailbroken = [jb isJailbroken];
+            [self sendPluginBoolResult:isJailbroken command:command];
+        }@catch (NSException *exception) {
+            [self handlePluginExceptionWithContext:exception :command];
+        }
+    }];
+
+}
+
 
 #pragma mark - utility functions
 
@@ -371,6 +385,11 @@ static NSString*const LOG_TAG = @"SystemPlugin[native]";
 
 - (void) sendPluginArrayResult:(NSArray*)result command:(CDVInvokedUrlCommand*)command {
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) sendPluginBoolResult:(BOOL)result command:(CDVInvokedUrlCommand*)command {
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:result];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
