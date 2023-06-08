@@ -1,6 +1,10 @@
 # Release Notes
 
-### Version 1.5.1(25/05/2023)
+### Version 1.6.0 (08/06/2023)
+
+- feat(ios): detect insecure jailbroken device
+
+### Version 1.5.1 (25/05/2023)
 
 - fix(ios): convert an iOS C99Ext-compliant identifier
 
